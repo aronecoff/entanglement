@@ -129,6 +129,23 @@ nav button{position:relative;flex:1;background:none;border:0;color:var(--dim);
   transition:color .3s var(--ease);min-height:46px}
 nav button.on{color:var(--fg)}
 
+/* ---------- install sheet ---------- */
+.isheet{position:fixed;left:0;right:0;bottom:0;z-index:120;background:var(--s2);
+  border-top-left-radius:26px;border-top-right-radius:26px;border-top:1px solid var(--line);
+  padding:26px var(--pad) calc(22px + env(safe-area-inset-bottom));
+  transform:translateY(102%);transition:transform .5s var(--ease);
+  box-shadow:0 -18px 50px rgba(0,0,0,.6)}
+.isheet.on{transform:translateY(0)}
+.ihead{display:flex;align-items:center;gap:14px}
+.iicon{width:60px;height:60px;border-radius:15px;flex:0 0 auto;
+  box-shadow:0 5px 16px rgba(0,0,0,.45)}
+.in1{font-size:19px;font-weight:600;letter-spacing:-.02em}
+.in2{font-size:15px;color:var(--dim);margin-top:3px}
+.ip{font-size:16px;line-height:1.5;color:var(--dim);margin-top:16px}
+.ip b{color:var(--fg);font-weight:600}
+.isheet .btn{margin-top:14px}
+.isheet .btn.ghost{margin-top:9px;font-weight:500;color:var(--dim)}
+
 /* ---------- sheet ---------- */
 .scrim{position:fixed;inset:0;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;
   transition:opacity .34s var(--ease);z-index:90;
@@ -191,6 +208,21 @@ nav button.on{color:var(--fg)}
   <button data-v="all">Rooms</button>
   <button data-v="info">Info</button>
 </div></nav>
+
+<div class="scrim" id="iscrim"></div>
+<div class="isheet" id="isheet">
+  <div class="ihead">
+    <img src="./icon-192.png" alt="" class="iicon">
+    <div class="itext">
+      <div class="in1">Entanglement · Friday</div>
+      <div class="in2">Add it to your home screen</div>
+    </div>
+  </div>
+  <p class="ip" id="ip">One tap and it lives on your phone like any other app —
+     opens full screen, and keeps working if the signal drops.</p>
+  <button class="btn" id="iyes">Install</button>
+  <button class="btn ghost" id="ino">Not now</button>
+</div>
 
 <div class="scrim" id="scrim"></div>
 <div class="sheet" id="sheet">
@@ -351,8 +383,44 @@ function renderInfo(){
 
 /* ---------------- install (Android Chrome) ---------------- */
 let deferred = null;
-addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferred = e; wireInstall(); });
-addEventListener('appinstalled', () => { deferred = null; wireInstall(); });
+const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+const isheet = () => $('#isheet'), iscrim = () => $('#iscrim');
+function dismissed(){ try{ return localStorage.getItem('inst-no') === '1'; }catch(e){ return false; } }
+function showInstallSheet(){
+  if (standalone() || dismissed()) return;
+  if (!deferred && !iOS) return;                 // no prompt available and not iOS: skip
+  if (iOS && !deferred){
+    $('#ip').innerHTML = 'Tap the <b>Share</b> button at the bottom of Safari, '+
+      'then <b>Add to Home Screen</b>. It opens full screen and keeps working offline.';
+    $('#iyes').style.display = 'none';
+    $('#ino').textContent = 'Got it';
+  }
+  isheet().classList.add('on'); iscrim().classList.add('on'); buzz(10);
+}
+function hideInstallSheet(remember){
+  isheet().classList.remove('on'); iscrim().classList.remove('on');
+  if (remember){ try{ localStorage.setItem('inst-no','1'); }catch(e){} }
+}
+addEventListener('beforeinstallprompt', e => {
+  e.preventDefault(); deferred = e; wireInstall();
+  setTimeout(showInstallSheet, 600);
+});
+addEventListener('appinstalled', () => { deferred = null; hideInstallSheet(false); wireInstall(); });
+addEventListener('DOMContentLoaded', () => {
+  $('#iyes').onclick = async () => {
+    buzz(12);
+    if (!deferred){ hideInstallSheet(false); go('info'); return; }
+    hideInstallSheet(false);
+    deferred.prompt();
+    const r = await deferred.userChoice;
+    if (r.outcome === 'accepted') deferred = null;
+    wireInstall();
+  };
+  $('#ino').onclick = () => { buzz(6); hideInstallSheet(true); };
+  iscrim().onclick = () => hideInstallSheet(true);
+  // iOS has no prompt event, so offer the instructions on first run
+  if (iOS) setTimeout(showInstallSheet, 1400);
+});
 function standalone(){ return matchMedia('(display-mode: standalone)').matches ||
   navigator.standalone === true; }
 function wireInstall(){
