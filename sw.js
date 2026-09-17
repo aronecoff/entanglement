@@ -1,4 +1,4 @@
-const C='ent-fri-v2';
+const C='ent-fri-v3';
 const FILES=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./maskable-192.png','./maskable-512.png','./apple-touch-icon.png'];
 self.addEventListener('install',e=>{self.skipWaiting();
   e.waitUntil(caches.open(C).then(c=>c.addAll(FILES)).catch(()=>{}));});

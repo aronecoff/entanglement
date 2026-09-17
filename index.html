@@ -260,18 +260,16 @@ function card(label, x, why, hideRoom){
 
 function renderNow(){
   let h = heroNow();
+  const start = S.reduce((a,b)=>a.S<b.S?a:b).S;
   const live = S.filter(x => x.S<=NOW && NOW<x.E);
   const hero = live.find(x=>x.route) || live[0];
   const nxt = S.filter(x => x.route && x.S>NOW).sort((a,b)=>a.S-b.S)[0];
-  if (nxt) h += `<div class="sec">Next in the plan</div>` + card('Up next', nxt, true);
+  if (nxt) h += `<div class="sec">${NOW < start ? 'First up' : 'Next in the plan'}</div>`
+              + card(NOW < start ? 'Opens the night' : 'Up next', nxt, true);
   const others = live.filter(x => x!==hero);
   if (others.length){
     h += `<div class="sec">Also playing right now</div>`;
     others.forEach(o => h += card(o.room==='Interdimensional Transmissions'?'Room D':o.room, o, false, true));
-  }
-  if (!live.length && NOW < S.reduce((a,b)=>a.S<b.S?a:b).S){
-    const f = S.filter(x=>x.route).sort((a,b)=>a.S-b.S)[0];
-    h += `<div class="sec">First up</div>` + card('Opens the night', f, true);
   }
   $('#v-now').innerHTML = h;
 }
@@ -416,9 +414,9 @@ function reveal(){
   io = new IntersectionObserver(es => es.forEach(en => {
     if (en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); }
   }), {rootMargin:'0px 0px -6% 0px'});
-  document.querySelectorAll('.view.on .rev').forEach((el,i) => {
-    el.style.transitionDelay = Math.min(i*45,220)+'ms'; io.observe(el);
-  });
+  const els = [...document.querySelectorAll('.view.on .rev')];
+  els.forEach((el,i) => { el.style.transitionDelay = Math.min(i*45,220)+'ms'; io.observe(el); });
+  setTimeout(() => els.forEach(el => el.classList.add('in')), 700);
 }
 addEventListener('scroll', () => {
   $('#top').classList.toggle('stuck', scrollY > 4);
