@@ -129,6 +129,71 @@ nav button{position:relative;flex:1;background:none;border:0;color:var(--dim);
   transition:color .3s var(--ease);min-height:46px}
 nav button.on{color:var(--fg)}
 
+/* ---------- facts / chips / listen ---------- */
+.facts{display:flex;flex-direction:column;gap:0;margin-top:18px;
+  border-top:1px solid var(--line)}
+.fact{display:flex;gap:14px;padding:11px 0;border-bottom:1px solid var(--line);
+  align-items:baseline}
+.fact dt{flex:0 0 96px;font-size:12px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--dim2)}
+.fact dd{flex:1;font-size:16px;line-height:1.4}
+.listen{display:flex;gap:9px;margin-top:18px;flex-wrap:wrap}
+.lbtn{flex:1 1 0;min-width:96px;display:flex;align-items:center;justify-content:center;gap:7px;
+  background:var(--s1);border:1px solid var(--line);border-radius:14px;padding:13px 10px;
+  color:var(--fg);font:600 14px/1 inherit;cursor:pointer;
+  transition:transform .28s var(--ease),background .2s}
+.lbtn:active{transform:scale(.95);background:#242428}
+.lbtn svg{opacity:.85}
+.starbtn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;
+  background:transparent;border:1px solid var(--line);border-radius:15px;padding:15px;
+  color:var(--fg);font:600 16px/1 inherit;margin-top:11px;cursor:pointer;
+  transition:transform .28s var(--ease),background .2s,border-color .2s}
+.starbtn:active{transform:scale(.97)}
+.starbtn.on{background:rgba(255,214,10,.14);border-color:rgba(255,214,10,.5);color:#ffd60a}
+.star{position:absolute;right:16px;top:14px;width:34px;height:34px;display:flex;
+  align-items:center;justify-content:center;border-radius:50%;border:0;background:transparent;
+  color:var(--dim2);cursor:pointer;transition:transform .3s var(--ease),color .2s}
+.star:active{transform:scale(.8)}
+.star.on{color:#ffd60a}
+.row{padding-right:52px}
+.sheetnav{display:flex;gap:9px;margin-top:20px}
+.sheetnav button{flex:1;background:var(--s1);border:1px solid var(--line);border-radius:14px;
+  padding:13px;color:var(--fg);font:600 14px/1 inherit;cursor:pointer;
+  transition:transform .28s var(--ease),opacity .2s}
+.sheetnav button:active{transform:scale(.96)}
+.sheetnav button:disabled{opacity:.3}
+
+/* ---------- filter chips ---------- */
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0 4px;margin:0 0 6px;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;background:var(--s1);border:1px solid var(--line);border-radius:999px;
+  padding:9px 15px;color:var(--dim);font:600 13.5px/1 inherit;cursor:pointer;white-space:nowrap;
+  transition:transform .26s var(--ease),background .2s,color .2s}
+.chip:active{transform:scale(.94)}
+.chip.on{background:var(--fg);color:#0a0a0b;border-color:var(--fg)}
+.empty{padding:34px 4px;color:var(--dim);font-size:16px;text-align:center}
+
+/* ---------- mini now bar ---------- */
+.mini{position:fixed;left:0;right:0;z-index:55;display:flex;justify-content:center;
+  bottom:calc(76px + env(safe-area-inset-bottom));padding:0 var(--pad);pointer-events:none;
+  opacity:0;transform:translateY(10px);transition:opacity .38s var(--ease),transform .38s var(--ease)}
+.mini.on{opacity:1;transform:none}
+.miniin{pointer-events:auto;display:flex;align-items:center;gap:12px;width:100%;max-width:420px;
+  background:rgba(28,28,31,.9);backdrop-filter:saturate(180%) blur(22px);
+  -webkit-backdrop-filter:saturate(180%) blur(22px);border:1px solid var(--line);
+  border-radius:17px;padding:11px 14px;box-shadow:0 10px 30px rgba(0,0,0,.5);cursor:pointer;
+  transition:transform .28s var(--ease)}
+.miniin:active{transform:scale(.98)}
+.mdot{width:7px;height:7px;border-radius:50%;background:#30d158;flex:0 0 auto;
+  animation:pulse 2.4s var(--ease) infinite}
+.mtxt{flex:1;min-width:0}
+.mn{font-size:15px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis}
+.mr{font-size:12.5px;color:var(--dim);margin-top:1px;white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis}
+.mleft{font-size:12.5px;color:var(--dim);flex:0 0 auto}
+
 /* ---------- install sheet ---------- */
 .isheet{position:fixed;left:0;right:0;bottom:0;z-index:120;background:var(--s2);
   border-top-left-radius:26px;border-top-right-radius:26px;border-top:1px solid var(--line);
@@ -195,11 +260,26 @@ nav button.on{color:var(--fg)}
 <main class="wrap">
   <section class="view on" id="v-now"></section>
   <section class="view" id="v-plan"></section>
-  <section class="view" id="v-all"></section>
+  <section class="view" id="v-all">
+    <div class="chips" id="chips">
+      <button class="chip on" data-f="all">Everything</button>
+      <button class="chip" data-f="plan">In the plan</button>
+      <button class="chip" data-f="star">Starred</button>
+      <button class="chip" data-f="live">Live acts</button>
+      <button class="chip" data-f="on">On now</button>
+    </div>
+    <div id="allbody"></div>
+  </section>
   <section class="view" id="v-info"></section>
 </main>
 
 <button class="jump" id="jump">Jump to now</button>
+
+<div class="mini" id="mini"><div class="miniin" id="miniin">
+  <i class="mdot"></i>
+  <div class="mtxt"><div class="mn" id="mn"></div><div class="mr" id="mr"></div></div>
+  <div class="mleft" id="mleft"></div>
+</div></div>
 
 <nav><div class="navin" id="navin">
   <i class="pill" id="pill"></i>
@@ -231,12 +311,20 @@ nav button.on{color:var(--fg)}
     <h2 id="sh-n"></h2>
     <div class="sm" id="sh-m"></div>
     <p class="bio" id="sh-b"></p>
-    <div class="src">Biography as published by the festival.</div>
+    <dl class="facts" id="sh-f"></dl>
+    <div class="listen" id="sh-l"></div>
+    <button class="starbtn" id="sh-star"></button>
+    <div class="sheetnav">
+      <button id="sh-prev">← Earlier</button>
+      <button id="sh-next">Later →</button>
+    </div>
+    <div class="src">Biography and facts as published by the festival.
+      Listen links are searches.</div>
   </div>
 </div>
 
 <script>
-const DATA = {"slots":[{"room":"Geist","a":"Kudeki","sup":null,"tag":null,"s":"2026-09-19T05:00:00Z","e":"2026-09-19T06:30:00Z","sm":1320,"em":1410,"bio":"Endzeit resident, now Berlin-based, with a release on Martyn's 3024 behind her. Techno with acid nerve and industrial edges.","route":true,"why":"Start here. Acid-edged but patient while the room fills."},{"room":"Geist","a":"Haruka","sup":null,"tag":"bay area debut","s":"2026-09-19T06:30:00Z","e":"2026-09-19T08:00:00Z","sm":1410,"em":1500,"bio":"A longtime resident of DJ Nobu’s Future Terror and head of the Protection label, Haruka left a mark in Detroit, having played with Craig Gonzalez for Interdimensional Transmissions in 2025. The Tokyo selector debuts in the Bay Area for Entanglement.","route":true,"why":"Deep and psychedelic, not hard. The easiest listening on the bill."},{"room":"Geist","a":"Agonis","sup":"live","tag":null,"s":"2026-09-19T08:00:00Z","e":"2026-09-19T09:00:00Z","sm":1500,"em":1560,"bio":"Co-founder of Amenthia Recordings, the Basel label that has spent ten years defining a nonlinear psychedelia of its own. He returns to Endzeit following his acclaimed live set at SF Art Week in January, bringing an immersive performance that challenges genres and boundaries.","route":true,"why":"Back to Geist. Live, immersive, melodic rather than forceful. The high point of the night."},{"room":"Geist","a":"DJ MARIA.","sup":null,"tag":null,"s":"2026-09-19T09:00:00Z","e":"2026-09-19T11:00:00Z","sm":1560,"em":1680,"bio":"Osaka-born, Tokyo-based, and among the clearest voices in Japan's new generation of psychedelic techno. Maria helps run the beloved forest festivals Moment and Transcendance; she returns to Endzeit following her acclaimed performance during Endzeit x SF Art Week.","route":true,"why":"Two hours to dance. Trance-leaning and patiently paced."},{"room":"Geist","a":"Garçon","sup":null,"tag":"west coast debut","s":"2026-09-19T11:00:00Z","e":"2026-09-19T13:00:00Z","sm":1680,"em":1800,"bio":"Co-founder of Amenthia Recordings, making his West Coast debut. Running the label and selecting records have been the same faculty for him for a decade, and the Amenthia ten-year retrospective closes with his tasteful continuous mix.","route":true,"why":"Warm and unbroken to close."},{"room":"Interdimensional Transmissions","a":"Nick Moss","sup":null,"tag":null,"s":"2026-09-19T05:00:00Z","e":"2026-09-19T07:00:00Z","sm":1320,"em":1440,"bio":"California-born and -based. Formerly of the San Francisco queer collective Kosmetik and its long Stud residency; now behind the open-air party Quiche.","route":false,"why":null},{"room":"Interdimensional Transmissions","a":"Mozhgan","sup":null,"tag":null,"s":"2026-09-19T07:00:00Z","e":"2026-09-19T09:00:00Z","sm":1440,"em":1560,"bio":"Iranian-born, California-based, founder of We Are Monsters. A No Way Back and Endzeit regular, she embodies the spirit of both collectives like few others.","route":false,"why":null},{"room":"Interdimensional Transmissions","a":"Carlos Souffront","sup":null,"tag":null,"s":"2026-09-19T09:00:00Z","e":"2026-09-19T11:00:00Z","sm":1560,"em":1680,"bio":"A DJ's DJ out of the Detroit area, now a San Francisco treasure. Present when the first No Way Back passed the twelve-hour mark, and every mutation since.","route":false,"why":null},{"room":"Interdimensional Transmissions","a":"Erika","sup":null,"tag":null,"s":"2026-09-19T11:00:00Z","e":"2026-09-19T13:00:00Z","sm":1680,"em":1800,"bio":"Partner in Interdimensional Transmissions and one half of Ectomorph. Handed a TR-606 in 1997 by BMG; three decades of music and machines since, split between Detroit and Berlin, dreaming on the cellular level.","route":false,"why":null},{"room":"Sanctuary","a":"Torsion","sup":"live","tag":null,"s":"2026-09-19T07:00:00Z","e":"2026-09-19T08:00:00Z","sm":1440,"em":1500,"bio":"Endzeit residents, Torsion will perform a live ambient set drawing inspiration from the meditative sonic explorations of Soundworks.","route":true,"why":"Move to the quiet room. No beat, low volume — a completely different kind of hour."},{"room":"Sanctuary","a":"Raica","sup":"live","tag":null,"s":"2026-09-19T08:00:00Z","e":"2026-09-19T09:30:00Z","sm":1500,"em":1590,"bio":"Long-form composition and spatial sound from Seattle’s Chloe Harris, aka Raica, returning to Endzeit. Her live ambient sets open slowly and wide, just like her delicate album If Not Now, When.","route":false,"why":null},{"room":"Sanctuary","a":"Sarah Wreath","sup":"live","tag":null,"s":"2026-09-19T09:30:00Z","e":"2026-09-19T11:00:00Z","sm":1590,"em":1680,"bio":"Talented producer, selector, Berlin community pillar, and dear friend — Sarah returns to Endzeit for her first live set in the Bay. Her debut LP Integration arrived on The Bunker New York; then, a successful second act on Sandwell District.","route":false,"why":null},{"room":"Sanctuary","a":"Chuck Gunn","sup":null,"tag":null,"s":"2026-09-19T11:00:00Z","e":"2026-09-19T13:00:00Z","sm":1680,"em":1800,"bio":"Co-founder and resident of QAOTIQ, the queer Bay Area party built around BIPOC and trans artists.","route":false,"why":null}],"steps":[{"m":1290,"t":"Arrive","d":"Wristband pickup is off Livingston. Doors 10:00 PM. Walk all three rooms once and find the bars while it is empty."},{"m":1650,"t":"Step outside","d":"No music in the courtyard tonight, so it stays quiet all night. Grab water on the way."},{"m":1800,"t":"It ends","d":"All three rooms stop at 6:00 AM. Sunrise is just before 7:00."}]};
+const DATA = {"slots":[{"room":"Geist","a":"Kudeki","sup":null,"tag":null,"s":"2026-09-19T05:00:00Z","e":"2026-09-19T06:30:00Z","sm":1320,"em":1410,"bio":"Endzeit resident, now Berlin-based, with a release on Martyn's 3024 behind her. Techno with acid nerve and industrial edges.","route":true,"why":"Start here. Acid-edged but patient while the room fills.","facts":[["Based","Berlin"],["Label","3024"],["Sound","acid nerve and industrial edges"]]},{"room":"Geist","a":"Haruka","sup":null,"tag":"bay area debut","s":"2026-09-19T06:30:00Z","e":"2026-09-19T08:00:00Z","sm":1410,"em":1500,"bio":"A longtime resident of DJ Nobu’s Future Terror and head of the Protection label, Haruka left a mark in Detroit, having played with Craig Gonzalez for Interdimensional Transmissions in 2025. The Tokyo selector debuts in the Bay Area for Entanglement.","route":true,"why":"Deep and psychedelic, not hard. The easiest listening on the bill.","facts":[["Based","Tokyo"],["Resident","Future Terror"],["Runs","the Protection label"],["First time","debuts in the Bay Area"]]},{"room":"Geist","a":"Agonis","sup":"live","tag":null,"s":"2026-09-19T08:00:00Z","e":"2026-09-19T09:00:00Z","sm":1500,"em":1560,"bio":"Co-founder of Amenthia Recordings, the Basel label that has spent ten years defining a nonlinear psychedelia of its own. He returns to Endzeit following his acclaimed live set at SF Art Week in January, bringing an immersive performance that challenges genres and boundaries.","route":true,"why":"Back to Geist. Live, immersive, melodic rather than forceful. The high point of the night.","facts":[["Label","Amenthia Recordings"],["From","Basel"],["Sound","a nonlinear psychedelia of its own"],["Set","immersive performance"]]},{"room":"Geist","a":"DJ MARIA.","sup":null,"tag":null,"s":"2026-09-19T09:00:00Z","e":"2026-09-19T11:00:00Z","sm":1560,"em":1680,"bio":"Osaka-born, Tokyo-based, and among the clearest voices in Japan's new generation of psychedelic techno. Maria helps run the beloved forest festivals Moment and Transcendance; she returns to Endzeit following her acclaimed performance during Endzeit x SF Art Week.","route":true,"why":"Two hours to dance. Trance-leaning and patiently paced.","facts":[["Based","Osaka-born, Tokyo-based"],["Runs","Moment and Transcendance"],["Sound","psychedelic techno"]]},{"room":"Geist","a":"Garçon","sup":null,"tag":"west coast debut","s":"2026-09-19T11:00:00Z","e":"2026-09-19T13:00:00Z","sm":1680,"em":1800,"bio":"Co-founder of Amenthia Recordings, making his West Coast debut. Running the label and selecting records have been the same faculty for him for a decade, and the Amenthia ten-year retrospective closes with his tasteful continuous mix.","route":true,"why":"Warm and unbroken to close.","facts":[["Label","Amenthia Recordings"],["First time","West Coast debut"],["Set","tasteful continuous mix"]]},{"room":"Interdimensional Transmissions","a":"Nick Moss","sup":null,"tag":null,"s":"2026-09-19T05:00:00Z","e":"2026-09-19T07:00:00Z","sm":1320,"em":1440,"bio":"California-born and -based. Formerly of the San Francisco queer collective Kosmetik and its long Stud residency; now behind the open-air party Quiche.","route":false,"why":null,"facts":[["Based","California-born and -based"],["Was","Kosmetik"],["Runs","Quiche"]]},{"room":"Interdimensional Transmissions","a":"Mozhgan","sup":null,"tag":null,"s":"2026-09-19T07:00:00Z","e":"2026-09-19T09:00:00Z","sm":1440,"em":1560,"bio":"Iranian-born, California-based, founder of We Are Monsters. A No Way Back and Endzeit regular, she embodies the spirit of both collectives like few others.","route":false,"why":null,"facts":[["Based","Iranian-born, California-based"],["Founded","We Are Monsters"],["Regular at","No Way Back"]]},{"room":"Interdimensional Transmissions","a":"Carlos Souffront","sup":null,"tag":null,"s":"2026-09-19T09:00:00Z","e":"2026-09-19T11:00:00Z","sm":1560,"em":1680,"bio":"A DJ's DJ out of the Detroit area, now a San Francisco treasure. Present when the first No Way Back passed the twelve-hour mark, and every mutation since.","route":false,"why":null,"facts":[["From","the Detroit area"],["Now","a San Francisco treasure"],["History","the first No Way Back"]]},{"room":"Interdimensional Transmissions","a":"Erika","sup":null,"tag":null,"s":"2026-09-19T11:00:00Z","e":"2026-09-19T13:00:00Z","sm":1680,"em":1800,"bio":"Partner in Interdimensional Transmissions and one half of Ectomorph. Handed a TR-606 in 1997 by BMG; three decades of music and machines since, split between Detroit and Berlin, dreaming on the cellular level.","route":false,"why":null,"facts":[["Based","Detroit and Berlin"],["Band","Ectomorph"],["Label","Interdimensional Transmissions"],["Since","a TR-606 in 1997"]]},{"room":"Sanctuary","a":"Torsion","sup":"live","tag":null,"s":"2026-09-19T07:00:00Z","e":"2026-09-19T08:00:00Z","sm":1440,"em":1500,"bio":"Endzeit residents, Torsion will perform a live ambient set drawing inspiration from the meditative sonic explorations of Soundworks.","route":true,"why":"Move to the quiet room. No beat, low volume — a completely different kind of hour.","facts":[["Who","Endzeit residents"],["Set","live ambient set"],["Inspired by","the meditative sonic explorations of Soundworks"]]},{"room":"Sanctuary","a":"Raica","sup":"live","tag":null,"s":"2026-09-19T08:00:00Z","e":"2026-09-19T09:30:00Z","sm":1500,"em":1590,"bio":"Long-form composition and spatial sound from Seattle’s Chloe Harris, aka Raica, returning to Endzeit. Her live ambient sets open slowly and wide, just like her delicate album If Not Now, When.","route":false,"why":null,"facts":[["Real name","Chloe Harris"],["From","Seattle"],["Album","If Not Now, When"],["Sound","Long-form composition and spatial sound"]]},{"room":"Sanctuary","a":"Sarah Wreath","sup":"live","tag":null,"s":"2026-09-19T09:30:00Z","e":"2026-09-19T11:00:00Z","sm":1590,"em":1680,"bio":"Talented producer, selector, Berlin community pillar, and dear friend — Sarah returns to Endzeit for her first live set in the Bay. Her debut LP Integration arrived on The Bunker New York; then, a successful second act on Sandwell District.","route":false,"why":null,"facts":[["Based","Berlin"],["Debut LP","Integration"],["Label","The Bunker New York"],["Then","Sandwell District"]]},{"room":"Sanctuary","a":"Chuck Gunn","sup":null,"tag":null,"s":"2026-09-19T11:00:00Z","e":"2026-09-19T13:00:00Z","sm":1680,"em":1800,"bio":"Co-founder and resident of QAOTIQ, the queer Bay Area party built around BIPOC and trans artists.","route":false,"why":null,"facts":[["Runs","QAOTIQ"],["Scene","the queer Bay Area party built around BIPOC and trans artists"]]}],"steps":[{"m":1290,"t":"Arrive","d":"Wristband pickup is off Livingston. Doors 10:00 PM. Walk all three rooms once and find the bars while it is empty."},{"m":1650,"t":"Step outside","d":"No music in the courtyard tonight, so it stays quiet all night. Grab water on the way."},{"m":1800,"t":"It ends","d":"All three rooms stop at 6:00 AM. Sunrise is just before 7:00."}]};
 const S = DATA.slots.map(x => ({...x, S:new Date(x.s), E:new Date(x.e)}));
 const ROOMS = ['Geist','Sanctuary','Interdimensional Transmissions'];
 const NOTE = {'Geist':'the loud room','Sanctuary':'quiet · live ambient',
@@ -253,6 +341,21 @@ const dur = ms => { const m = Math.max(0,Math.round(ms/60000)), h = Math.floor(m
 const buzz = ms => { try{ navigator.vibrate && navigator.vibrate(ms); }catch(e){} };
 let NOW = new Date();
 const state = x => NOW >= x.E ? 'past' : (NOW >= x.S ? 'live' : '');
+
+/* starred sets, kept on the device */
+let STAR = new Set();
+try { STAR = new Set(JSON.parse(localStorage.getItem('stars') || '[]')); } catch(e){}
+const key = x => x.a + '@' + x.s;
+const starred = x => STAR.has(key(x));
+function toggleStar(x){
+  const k = key(x);
+  STAR.has(k) ? STAR.delete(k) : STAR.add(k);
+  try { localStorage.setItem('stars', JSON.stringify([...STAR])); } catch(e){}
+  buzz(STAR.has(k) ? 14 : 6);
+  tick();
+  if (sheetIdx >= 0) paintSheet(S[sheetIdx]);
+}
+const SVG_STAR = on => `<svg width="20" height="20" viewBox="0 0 20 20" fill="${on?'currentColor':'none'}" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M10 2.6l2.3 4.7 5.2.8-3.8 3.7.9 5.1L10 14.5l-4.6 2.4.9-5.1L2.5 8.1l5.2-.8L10 2.6z"/></svg>`;
 
 /* ---------------- views ---------------- */
 function heroNow(){
@@ -329,11 +432,17 @@ function renderPlan(){
   $('#v-plan').innerHTML = h + '</div>';
 }
 
+let FILTER = 'all';
+const passes = x => FILTER==='all' || (FILTER==='plan'&&x.route) ||
+  (FILTER==='star'&&starred(x)) || (FILTER==='live'&&x.sup) ||
+  (FILTER==='on'&&state(x)==='live');
+
 function renderAll(){
-  let h = '';
+  let h = '', shown = 0;
   ROOMS.forEach(rm => {
-    const inR = S.filter(x=>x.room===rm).sort((a,b)=>a.S-b.S);
+    const inR = S.filter(x=>x.room===rm && passes(x)).sort((a,b)=>a.S-b.S);
     if (!inR.length) return;
+    shown += inR.length;
     const skip = rm === 'Interdimensional Transmissions';
     h += `<div class="sec">${esc(rm==='Interdimensional Transmissions'?'Room D':rm)} <span>· ${NOTE[rm]}</span></div>
       <div class="list ${skip?'muted':''}">`;
@@ -342,11 +451,14 @@ function renderAll(){
       h += `<div class="row tap ${st}" data-i="${S.indexOf(x)}" ${st==='live'?'data-now="1"':''}>
         <div class="t">${fmt(x.S)}</div><div class="b">
         <div class="n"><span class="nm">${ini(x.a)}${sup(x)}</span>${st==='live'?'<span class="tag live">Now</span>':''}${x.route?'<span class="tag plan">Plan</span>':''}</div>
-        <div class="r">${fmt(x.S)} – ${fmt(x.E)}${x.tag?' · '+esc(x.tag):''}</div></div></div>`;
+        <div class="r">${fmt(x.S)} – ${fmt(x.E)}${x.tag?' · '+esc(x.tag):''}</div></div>
+        <button class="star ${starred(x)?'on':''}" data-star="${S.indexOf(x)}"
+          aria-label="Star">${SVG_STAR(starred(x))}</button></div>`;
     });
     h += '</div>';
   });
-  $('#v-all').innerHTML = h;
+  if (!shown) h = `<div class="empty">Nothing here yet.<br>Star a set and it shows up.</div>`;
+  $('#allbody').innerHTML = h;
 }
 
 function renderInfo(){
@@ -457,7 +569,7 @@ function go(v, silent){
   VIEWS.forEach(x => $('#v-'+x).classList.toggle('on', x===v));
   movePill(); if (!silent) buzz(6);
   scrollTo({top:0,behavior:'instant'});
-  reveal(); updateJump();
+  reveal(); updateJump(); renderMini();
 }
 document.querySelectorAll('nav button').forEach(b => b.onclick = () => go(b.dataset.v));
 
@@ -491,6 +603,18 @@ addEventListener('scroll', () => {
   updateJump();
 }, {passive:true});
 
+function renderMini(){
+  const live = S.filter(x => x.S<=NOW && NOW<x.E);
+  const x = live.find(y=>y.route) || live[0];
+  const m = $('#mini');
+  if (!x || view === 'now'){ m.classList.remove('on'); return; }
+  $('#mn').innerHTML = ini(x.a) + sup(x);
+  $('#mr').textContent = x.room;
+  $('#mleft').textContent = dur(x.E - NOW) + ' left';
+  $('#miniin').dataset.i = S.indexOf(x);
+  m.classList.add('on');
+}
+
 function updateJump(){
   const el = document.querySelector('.view.on [data-now]');
   const j = $('#jump');
@@ -504,23 +628,73 @@ $('#jump').onclick = () => { buzz(6);
 
 /* ---------------- sheet ---------------- */
 const sheet = $('#sheet'), scrim = $('#scrim');
-function openSheet(x){
-  buzz(9);
+let sheetIdx = -1;
+const ORDER = S.map((x,i)=>i).sort((a,b)=> S[a].S - S[b].S || S[a].room.localeCompare(S[b].room));
+const SVG_PLAY = `<svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><path d="M4 2.6v10.8L13 8z"/></svg>`;
+
+function paintSheet(x){
+  const mins = Math.round((x.E - x.S)/60000);
   $('#sh-n').innerHTML = ini(x.a)+sup(x);
-  $('#sh-m').textContent = x.room+' · '+fmt(x.S)+' – '+fmt(x.E)+(x.tag?' · '+x.tag:'');
+  $('#sh-m').textContent = x.room + ' · ' + fmt(x.S) + ' – ' + fmt(x.E) +
+    ' · ' + (mins>=60 ? Math.floor(mins/60)+'h'+(mins%60?' '+(mins%60)+'m':'') : mins+'m') +
+    (x.tag ? ' · ' + x.tag : '');
   $('#sh-b').textContent = x.bio;
+  $('#sh-f').innerHTML = (x.facts||[]).map(f =>
+    `<div class="fact"><dt>${esc(f[0])}</dt><dd>${esc(f[1])}</dd></div>`).join('');
+  const q = encodeURIComponent(x.a + ' dj set');
+  const qa = encodeURIComponent(x.a);
+  $('#sh-l').innerHTML =
+    `<button class="lbtn" data-open="https://www.youtube.com/results?search_query=${q}">${SVG_PLAY} YouTube</button>` +
+    `<button class="lbtn" data-open="https://open.spotify.com/search/${qa}">${SVG_PLAY} Spotify</button>` +
+    `<button class="lbtn" data-open="https://soundcloud.com/search?q=${qa}">${SVG_PLAY} SoundCloud</button>`;
+  const sb = $('#sh-star');
+  sb.className = 'starbtn' + (starred(x) ? ' on' : '');
+  sb.innerHTML = SVG_STAR(starred(x)) + (starred(x) ? ' Starred' : ' Star this set');
+  sb.onclick = () => toggleStar(x);
+  const pos = ORDER.indexOf(S.indexOf(x));
+  $('#sh-prev').disabled = pos <= 0;
+  $('#sh-next').disabled = pos >= ORDER.length-1;
+  $('#sh-prev').onclick = () => { if(pos>0){ buzz(6); openSheet(S[ORDER[pos-1]], true); } };
+  $('#sh-next').onclick = () => { if(pos<ORDER.length-1){ buzz(6); openSheet(S[ORDER[pos+1]], true); } };
+}
+
+function openSheet(x, keep){
+  if (!keep) buzz(9);
+  sheetIdx = S.indexOf(x);
+  paintSheet(x);
+  sheet.querySelector('.sbody').scrollTop = 0;
   sheet.classList.add('on'); scrim.classList.add('on');
   document.body.style.overflow = 'hidden';
 }
 function closeSheet(){
   sheet.classList.remove('on','drag'); sheet.style.transform = '';
-  scrim.classList.remove('on'); document.body.style.overflow = '';
+  scrim.classList.remove('on'); document.body.style.overflow = ''; sheetIdx = -1;
 }
 scrim.onclick = closeSheet;
 document.body.addEventListener('click', e => {
+  const st = e.target.closest('[data-star]');
+  if (st){ e.stopPropagation(); toggleStar(S[+st.dataset.star]); return; }
+  const op = e.target.closest('[data-open]');
+  if (op){ buzz(8); window.open(op.dataset.open, '_blank', 'noopener'); return; }
+  const ch = e.target.closest('.chip');
+  if (ch){ buzz(6); FILTER = ch.dataset.f;
+    document.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c===ch));
+    renderAll(); reveal(); return; }
   const t = e.target.closest('[data-i]');
   if (t && !sheet.contains(t)) openSheet(S[+t.dataset.i]);
 });
+
+/* swipe inside the sheet moves between sets */
+let sx2 = 0, sy2 = 0;
+sheet.addEventListener('touchstart', e => {
+  sx2 = e.touches[0].clientX; sy2 = e.touches[0].clientY; }, {passive:true});
+sheet.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - sx2, dy = e.changedTouches[0].clientY - sy2;
+  if (Math.abs(dx) > 68 && Math.abs(dx) > Math.abs(dy)*1.8 && sheetIdx >= 0){
+    const pos = ORDER.indexOf(sheetIdx), n = pos + (dx < 0 ? 1 : -1);
+    if (n >= 0 && n < ORDER.length){ buzz(6); openSheet(S[ORDER[n]], true); }
+  }
+}, {passive:true});
 
 /* drag the sheet down to dismiss */
 let sy = 0, dragging = false;
@@ -543,13 +717,13 @@ grab.addEventListener('touchend', e => {
 function tick(){
   NOW = new Date();
   $('#clock').textContent = fmt(NOW);
-  renderNow(); renderPlan(); renderAll();
+  renderNow(); renderPlan(); renderAll(); renderMini();
   reveal(); movePill(); updateJump();
 }
 renderInfo(); tick();
 setInterval(() => {
   NOW = new Date(); $('#clock').textContent = fmt(NOW);
-  renderNow(); renderPlan(); renderAll(); reveal(); updateJump();
+  renderNow(); renderPlan(); renderAll(); renderMini(); reveal(); updateJump();
 }, 30000);
 addEventListener('resize', movePill);
 addEventListener('visibilitychange', () => { if (!document.hidden) tick(); });
