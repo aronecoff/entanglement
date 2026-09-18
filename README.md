@@ -6,4 +6,5 @@ The Loom, Oakland. Installable to a phone home screen.
 Set times and artist biographies are the festival's own, from endzeit.us/entanglement.
 The suggested route through the night is not theirs.
 
-Live at https://aronecoff.github.io/entanglement/
+Friday app: https://aronecoff.github.io/entanglement/
+Full weekend: https://aronecoff.github.io/entanglement/weekend/
